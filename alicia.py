@@ -8,17 +8,13 @@
 from cStringIO import StringIO
 
 import bs4
-from jinja2 import Environment, Markup, PackageLoader, select_autoescape
+from jinja2 import Environment, Markup, FileSystemLoader, select_autoescape
 
 from MoinMoin import wikiutil, config
 from MoinMoin.wikiutil import getLocalizedPage
 from MoinMoin.action import get_available_actions
 from MoinMoin.Page import Page
 from MoinMoin.theme import ThemeBase
-
-
-j2env = Environment(loader=PackageLoader('MoinMoin', 'templates'),
-                    autoescape=select_autoescape(['html', 'xml']))
 
 
 class Theme(ThemeBase):
@@ -152,6 +148,11 @@ class Theme(ThemeBase):
         }   
     ]
 
+    def __init__(self, *args, **kwargs):
+        ThemeBase.__init__(self, *args, **kwargs)
+        self.j2env = Environment(loader=FileSystemLoader(self.cfg.templates_path),
+                                 autoescape=select_autoescape(['html', 'xml']))
+        
     def make_icon(self, icon, vars=None, **kwargs):
         if icon in self.fa_icons:
             return '<i class="%s" aria-hidden="true"></i>' % self.fa_icons[icon]
@@ -331,13 +332,6 @@ class Theme(ThemeBase):
                             'print_alternate_href': page.url(req, querystr=dict(action='print'))})
             if page_parent_page:
                 context['page_up'] = req.href(page_parent_page)
-
-        # write buffer because we call AttachFile
-
-        # template = j2env.get_template('bits/head_title.html')
-        # output = template.render(context)
-        # req.write(output)
-        # output = []
         
         output = StringIO()
         write_f_onhold = req.write
@@ -357,7 +351,7 @@ class Theme(ThemeBase):
             {'rel': "Help", 'href': "%s" % req.href(page_help_formatting)},
         ]
 
-        template = j2env.get_template('bits/head.html')
+        template = self.j2env.get_template('bits/head.html')
         output = template.render(context)
         req.write(output)
         
@@ -929,7 +923,7 @@ class Theme(ThemeBase):
             'msgs': self.get_msgs(dic),
         }
         
-        template = j2env.get_template('bits/body_header.html')
+        template = self.j2env.get_template('bits/body_header.html')
         output = template.render(context)
         return output
         # return u'\n'.join(html)        
@@ -991,7 +985,7 @@ class Theme(ThemeBase):
         context = {
             'static_base': "%s/%s/" % (self.cfg.url_prefix_static, self.name),
         }
-        template = j2env.get_template('bits/body_footer.html')
+        template = self.j2env.get_template('bits/body_footer.html')
         output = template.render(context)
         return output
     
