@@ -1,0 +1,11 @@
+*.pyc
+*~
+*.*~
+*.zip
+*.egg-info
+*.db
+.coverage
+.emacs.desktop*
+.tox
+.cache
+.eggs
