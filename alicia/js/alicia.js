@@ -145,8 +145,11 @@ $(document).ready(function() {
     _ = $('FORM#editor');
     if(_.length) {
         _.find('#chktrivialtop').before('<div id="chktrivialtop_div" class="form-check">');
-        _.find('#chktrivialtop_div').append($('#chktrivialtop'));
+        var label = $('LABEL[for=chktrivialtop]').text();
+        $('LABEL[for=chktrivialtop]').text('');
         _.find('#chktrivialtop_div').append($('LABEL[for=chktrivialtop]'));
+        _.find('LABEL[for=chktrivialtop]').append($('#chktrivialtop'));
+        _.find('LABEL[for=chktrivialtop]').append(label);
         _.find('TEXTAREA').addClass("my-3");
     }
     
