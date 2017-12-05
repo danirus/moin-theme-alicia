@@ -518,21 +518,25 @@ class Theme(ThemeBase):
         items = {'user': None, 'settings': None, 'logout': None, 'login': None}
         if self.request.user.valid and self.request.user.name:
             items['user'] = {'title': self.request.user.name,
-                             'url': self.request.href(self.request.user.name)}
+                             'url': self.request.href(self.request.user.name),
+                             'icon': 'fa fa-user-circle'}
             settings_url = dic['page'].url(self.request,
                                            querystr={'action': 'userprefs'})
             items['settings'] = {'title': self.request.getText('Settings'),
-                                 'url': settings_url}
+                                 'url': settings_url,
+                                 'icon': 'fa fa-sliders'}
             logout_url = dic['page'].url(self.request,
                                          querystr={'action': 'logout',
                                                    'logout': 'logout'})
             items['logout'] = {'title': self.request.getText('Logout'),
-                               'url': logout_url}
+                               'url': logout_url,
+                               'icon': 'fa fa-sign-out'}
         else:
             login_url = dic['page'].url(self.request,
                                         querystr={'action': 'login'})
             items['login'] = {'title': self.request.getText('Login'),
-                              'url': login_url}
+                              'url': login_url,
+                              'icon': 'fa fa-sign-in'}
         return items
 
     def get_edit_button(self, dic):
@@ -648,7 +652,7 @@ class Theme(ThemeBase):
             output = u'?' + output
         return output
     
-    def get_menu(self, dic):
+    def get_menu(self, dic, user_items=None):
         req = self.request
         rev = req.rev
         _ = req.getText
@@ -840,7 +844,15 @@ class Theme(ThemeBase):
                                 'href': data['href'],
                                 'icon': data['icon'],
                             })
+            if _group['label'] == 'User':
+                for k in user_items.keys():
+                    if user_items[k]:
+                        _group['entries'].append({
+                            'title': _(user_items[k]['title']),
+                            'href': user_items[k]['url'],
+                            'icon': user_items[k]['icon']})
             output.append(_group)
+        import ipdb; ipdb.set_trace()
         return output
 
     def get_msgs(self, dic):
@@ -914,17 +926,19 @@ class Theme(ThemeBase):
             logo_markup = Markup(self.cfg.logo_markup)
         else:
             logo_markup = Markup(self.cfg.logo_string)
-        
+
+        user_items = self.get_user_items(dic)
+            
         context = {
             'page_name': dic['page'].page_name,
             'logo_markup': logo_markup,
             'logo_string': Markup(self.cfg.logo_string),
-            'user_items': self.get_user_items(dic),
+            'user_items': user_items,
             'homepage_url': self.request.href(frontpage.page_name),
             'findpage_url': self.request.href(findpage.page_name),
             'edit_button': self.get_edit_button(dic),
             'menu_label': self.request.getText('Menu'),
-            'menu': self.get_menu(dic),
+            'menu': self.get_menu(dic, user_items=user_items),
             'helpcontents_url': self.request.href(helpcontents.page_name),
             'navigation_items': navigation_items,
             'trail_items': trail_items,
