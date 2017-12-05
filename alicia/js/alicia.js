@@ -146,7 +146,7 @@ $(document).ready(function() {
     if(_.length) {
         var ids = ['chktrivialtop', 'chktrivial', 'chkrstrip'];
         for(var i=0; i<ids.length; i++) {
-            _.find('#'+ids[i]+).before('<div id="'+ids[i]+'_div" class="form-check ml-1 mt-1">');
+            _.find('#'+ids[i]).before('<div id="'+ids[i]+'_div" class="form-check ml-1 mt-1">');
             var label = $('LABEL[for='+ids[i]+']').text();
             $('LABEL[for='+ids[i]+']').text('');
             _.find('#'+ids[i]+'_div').append($('LABEL[for='+ids[i]+']'));
