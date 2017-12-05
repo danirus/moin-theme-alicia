@@ -268,31 +268,4 @@ $(document).ready(function() {
     $('P.searchhint').each(function() {
         $(this).removeClass('searchhint').addClass('alert alert-info text-center');
     });
-
-    //----------------------------------------------------------------------
-    // Pagination.
-    _ = $("#content table.searchpages");
-    if(_.length) {
-        var p8n = '<hr/><ul class="pagination justify-content-center">';
-        var items = _.find("TR:eq(0) TD");
-        // debugger;
-        items.each(function(idx, val) {
-            var css = "";
-            var anchor = $(this).find('a');
-            var href = anchor.attr('href') || '#';
-            var text = anchor.text() || $(this).text();
-            if(idx==0 || idx==items.length-1) {
-                if(href=="#") css = 'disabled';
-                if(idx==0)
-                    text = '&laquo;';
-                else text = '&raquo;';
-            } else {
-                if(href=="#") css = 'active';
-            }
-            p8n += '<li class="page-item '+css+'"><a class="page-link" href="'+href+'">'+text+'</a></li>';
-        });
-        p8n += '</ul>';
-        _.after(p8n);
-        _.remove();
-    }
 });
