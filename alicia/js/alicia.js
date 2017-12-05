@@ -271,10 +271,10 @@ $(document).ready(function() {
 
     //----------------------------------------------------------------------
     // Pagination.
-    var tablepages = $("table.searchpages");
-    if(tablepages.length) {
+    _ = $("#content table.searchpages");
+    if(_.length) {
         var p8n = '<hr/><ul class="pagination justify-content-center">';
-        var items = tablepages.find("TR:eq(0) TD");
+        var items = _.find("TR:eq(0) TD");
         // debugger;
         items.each(function(idx, val) {
             var css = "";
@@ -292,7 +292,7 @@ $(document).ready(function() {
             p8n += '<li class="page-item '+css+'"><a class="page-link" href="'+href+'">'+text+'</a></li>';
         });
         p8n += '</ul>';
-        tablepages.after(p8n);
-        tablepages.remove();
+        _.after(p8n);
+        _.remove();
     }
 });
