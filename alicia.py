@@ -852,7 +852,6 @@ class Theme(ThemeBase):
                             'href': user_items[k]['url'],
                             'icon': user_items[k]['icon']})
             output.append(_group)
-        import ipdb; ipdb.set_trace()
         return output
 
     def get_msgs(self, dic):
