@@ -21,7 +21,7 @@
              aria-hidden="true"></i>
         </a>
         <a href="{{ user_items.settings.url }}" title="{{ user_items.settings.title }}" rel="nofollow">
-          <i class="fa fa-cog" aria-hidden="true"></i>
+          <i class="fa fa-sliders" aria-hidden="true"></i>
         </a>
         <a href="{{ user_items.logout.url }}" title="{{ user_items.logout.title }}" rel="nofollow">
           <i class="fa fa-sign-out" aria-hidden="true"></i>
@@ -115,6 +115,11 @@
               {% for msg in msgs %}
               <div class="{{ msg.type }} {{ msg.style }}">
                 {% if msg.type == 'card' %}<div class="card-body">{% endif %}{{ msg.text }}{% if msg.type == 'card' %}</div>{% endif %}
+                {% if msg.type != 'card' %}
+                <a href="{{ search_form_action }}" class="close" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </a>
+                {% endif %}
               </div>
               {% endfor %}
             </div>

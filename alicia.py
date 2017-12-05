@@ -883,33 +883,33 @@ class Theme(ThemeBase):
         @rtype: unicode
         @return: page header html
         """
-        html = [
-            # Pre header custom html
-            self.emit_custom_html(self.cfg.page_header1),
+        # html = [
+        #     # Pre header custom html
+        #     self.emit_custom_html(self.cfg.page_header1),
 
-            # Header
-            u'<div id="header">',
-            self.logo(),
-            self.searchform(dic),
-            self.username(dic),
-            u'<div id="locationline">',
-            self.interwiki(dic),
-            self.title(dic),
-            u'</div>',
-            self.trail(dic),
-            self.navibar(dic),
-            #u'<hr id="pageline">',
-            u'<div id="pageline"><hr style="display:none;"></div>',
-            self.msg(dic),
-            self.editbar(dic),
-            u'</div>',
+        #     # Header
+        #     u'<div id="header">',
+        #     self.logo(),
+        #     self.searchform(dic),
+        #     self.username(dic),
+        #     u'<div id="locationline">',
+        #     self.interwiki(dic),
+        #     self.title(dic),
+        #     u'</div>',
+        #     self.trail(dic),
+        #     self.navibar(dic),
+        #     #u'<hr id="pageline">',
+        #     u'<div id="pageline"><hr style="display:none;"></div>',
+        #     self.msg(dic),
+        #     self.editbar(dic),
+        #     u'</div>',
 
-            # Post header custom html (not recommended)
-            self.emit_custom_html(self.cfg.page_header2),
+        #     # Post header custom html (not recommended)
+        #     self.emit_custom_html(self.cfg.page_header2),
 
-            # Start of page
-            self.startPage(),
-        ]
+        #     # Start of page
+        #     self.startPage(),
+        # ]
 
         frontpage = wikiutil.getFrontPage(self.request)
         findpage = getLocalizedPage(self.request, 'FindPage')
@@ -927,7 +927,7 @@ class Theme(ThemeBase):
             logo_markup = Markup(self.cfg.logo_string)
 
         user_items = self.get_user_items(dic)
-            
+
         context = {
             'page_name': dic['page'].page_name,
             'logo_markup': logo_markup,
