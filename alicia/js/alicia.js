@@ -144,13 +144,16 @@ $(document).ready(function() {
     // Edit page.
     _ = $('FORM#editor');
     if(_.length) {
-        _.find('#chktrivialtop').before('<div id="chktrivialtop_div" class="form-check">');
-        var label = $('LABEL[for=chktrivialtop]').text();
-        $('LABEL[for=chktrivialtop]').text('');
-        _.find('#chktrivialtop_div').append($('LABEL[for=chktrivialtop]'));
-        _.find('LABEL[for=chktrivialtop]').append($('#chktrivialtop'));
-        _.find('LABEL[for=chktrivialtop]').append(label);
-        _.find('TEXTAREA').addClass("my-3");
+        var ids = ['chktrivialtop', 'chktrivial', 'chkrstrip'];
+        for(var i=0; i<ids.length; i++) {
+            _.find('#'+ids[i]+).before('<div id="'+ids[i]+'_div" class="form-check ml-1 mt-1">');
+            var label = $('LABEL[for='+ids[i]+']').text();
+            $('LABEL[for='+ids[i]+']').text('');
+            _.find('#'+ids[i]+'_div').append($('LABEL[for='+ids[i]+']'));
+            _.find('LABEL[for='+ids[i]+']').append($('#'+ids[i]));
+            _.find('LABEL[for='+ids[i]+']').append(label);
+            _.find('TEXTAREA').addClass("my-3");
+        }
     }
     
     //----------------------------------------------------------------------
