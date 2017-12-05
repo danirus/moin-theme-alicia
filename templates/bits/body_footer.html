@@ -1,5 +1,18 @@
               </div>
+            </div><!-- row -->
+            {% if not edit_mode %}
+            <div class="row">
+              <div class="col-sm-12">
+                <hr/>
+              </div>
+              <div class="col-sm-6">
+                <p class="text-muted small">A <a href="https://moinmo.in/">MoinMoin</a> wiki</p>
+              </div>
+              <div class="col-sm-6">
+                <p class="text-muted text-right small">{{ pageinfo }}</p>
+              </div>
             </div>
+            {% endif %}
           </div>
         </div>
       </article>

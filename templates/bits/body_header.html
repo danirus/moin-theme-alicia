@@ -37,7 +37,7 @@
   <div class="sidebar">
     <div class="sidebar-collapse">
       <div>
-        <h2 class="sitename">{{ logo_string }}</h2>
+        <h3 class="sitename">{{ logo_markup }}</h3>
         <div id="toc" class="invisible">
         </div>
         
@@ -107,10 +107,9 @@
       </div>
     </nav>
     <article>
-      {% if msgs|count or trail_items|count %}
+      {% if msgs|count %}
       <div class="header">
         <div class="container-fluid">
-          {% if msgs|count %}
           <div class="row">
             <div class="col-md-12">
               {% for msg in msgs %}
@@ -120,24 +119,6 @@
               {% endfor %}
             </div>
           </div>
-          {% elif trail_items|count %}
-          <div class="row">
-            <div class="col-md-8">
-              <ol class="breadcrumb">
-                {% for item in trail_items %}
-                <li class="breadcrumb-item">
-                  <a href="{{ item.href }}">{{ item.name }}</a>
-                </li>
-                {% endfor %}
-              </ol>
-            </div>
-            {% if pageinfo %}
-            <div class="col-md-4">
-              <p class="pt-1 text-muted text-right small">{{ pageinfo }}</p>
-            </div>
-            {% endif %}
-          </div>
-          {% endif %}
         </div>
       </div>
       {% endif %}

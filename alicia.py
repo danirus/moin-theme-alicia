@@ -335,7 +335,7 @@ class Theme(ThemeBase):
         
         output = StringIO()
         write_f_onhold = req.write
-        req.write = lambda s: output.write(s)
+        req.write = lambda s: output.write(s.encode('utf-8'))
         
         if pagename and req.user.may.read(pagename):
             from MoinMoin.action import AttachFile
@@ -536,7 +536,7 @@ class Theme(ThemeBase):
         return items
 
     def get_edit_button(self, dic):
-        edit_mode = dic.get('edit_mode', 0)
+        edit_mode = dic.get('edit_mode', False)
         if 'edit' in self.request.cfg.actions_excluded:
             return {'visible': False}
         if not (
@@ -579,9 +579,9 @@ class Theme(ThemeBase):
         Return if action is available or not.
         If action starts with lowercase, return True without actually check if action exists.
         """
-        request = self.request
-        excluded = request.cfg.actions_excluded
-        available = get_available_actions(request.cfg, page, request.user)
+        req = self.request
+        excluded = req.cfg.actions_excluded
+        available = get_available_actions(req.cfg, page, req.user)
         return not (action in excluded or (action[0].isupper() and not action in available))
 
     def _is_editable_page(self, page):
@@ -621,16 +621,16 @@ class Theme(ThemeBase):
         """
         if not (
                 (self.cfg.mail_enabled or self.cfg.jabber_enabled) and
-                req.user.valid
+                self.request.user.valid
         ):
             return (u'', u'')
 
-        _ = req.getText
-        if req.user.isSubscribedTo([page.page_name]):
+        _ = self.request.getText
+        if self.request.user.isSubscribedTo([page.page_name]):
             action, text = 'unsubscribe', _("Unsubscribe")
         else:
             action, text = 'subscribe', _("Subscribe")
-        if action in req.cfg.actions_excluded:
+        if action in self.request.cfg.actions_excluded:
             return (u'', u'')
         return (action, text)
 
@@ -845,7 +845,8 @@ class Theme(ThemeBase):
 
     def get_msgs(self, dic):
         msgs = []
-        msg_type = {'hint': 'alert-success',
+        msg_type = {'dialog': 'alert-success',
+                    'hint': 'alert-success',
                     'info': 'alert-info',
                     'warning': 'alert-warning',
                     'error': 'alert-danger'}
@@ -854,11 +855,16 @@ class Theme(ThemeBase):
                 text = msg.render()
             except AttributeError as exc:
                 text = msg
-            msgs.append({'text': Markup(text),
-                         'type': 'alert' if msg_class in msg_type.keys() else 'card',
-                         'style': msg_type.get(msg_class, 'text-black bg-light')})
+            if text:
+                msgs.append({'text': Markup(text),
+                             'type': 'alert' if msg_class in msg_type.keys() else 'card',
+                             'style': msg_type.get(msg_class, 'text-black bg-light')})
         return msgs
-   
+
+    def editorheader(self, dic, **kwargs):
+        dic['edit_mode'] = 1
+        return self.header(dic, **kwargs)
+    
     def header(self, dic, **kw):
         """ Assemble wiki header
 
@@ -903,10 +909,16 @@ class Theme(ThemeBase):
             dic, exclude=[i['name'] for i in navigation_items])
 
         form = self.request.values
+
+        if self.cfg.logo_markup:
+            logo_markup = Markup(self.cfg.logo_markup)
+        else:
+            logo_markup = Markup(self.cfg.logo_string)
         
         context = {
             'page_name': dic['page'].page_name,
-            'logo_string': self.cfg.logo_string,
+            'logo_markup': logo_markup,
+            'logo_string': Markup(self.cfg.logo_string),
             'user_items': self.get_user_items(dic),
             'homepage_url': self.request.href(frontpage.page_name),
             'findpage_url': self.request.href(findpage.page_name),
@@ -919,41 +931,14 @@ class Theme(ThemeBase):
             'search_form_action': self.request.href(dic['page'].page_name),
             'search_form_label': self.request.getText('Search'),
             'search_form_value': wikiutil.escape(form.get('value', ''), 1),
-            'pageinfo': self.get_pageinfo(dic['page']),
             'msgs': self.get_msgs(dic),
         }
         
         template = self.j2env.get_template('bits/body_header.html')
         output = template.render(context)
         return output
-        # return u'\n'.join(html)        
-    
-    def editorheader(self, d, **kw):
-        """ Assemble wiki header for editor
 
-        @param d: parameter dictionary
-        @rtype: unicode
-        @return: page header html
-        """
-        html = [
-            # Pre header custom html
-            self.emit_custom_html(self.cfg.page_header1),
-
-            # Header
-            u'<div id="header">',
-            self.title(d),
-            self.msg(d),
-            u'</div>',
-
-            # Post header custom html (not recommended)
-            self.emit_custom_html(self.cfg.page_header2),
-
-            # Start of page
-            self.startPage(),
-        ]
-        return u'\n'.join(html)
-
-    def footer(self, d, **keywords):
+    def footer(self, dic, **keywords):
         """ Assemble wiki footer
 
         @param d: parameter dictionary
@@ -961,7 +946,7 @@ class Theme(ThemeBase):
         @rtype: unicode
         @return: page footer html
         """
-        page = d['page']
+        page = dic['page']
         html = [
             # End of page
             self.pageinfo(page),
@@ -972,9 +957,9 @@ class Theme(ThemeBase):
 
             # Footer
             u'<div id="footer">',
-            self.editbar(d),
-            self.credits(d),
-            self.showversion(d, **keywords),
+            self.editbar(dic),
+            self.credits(dic),
+            self.showversion(dic, **keywords),
             u'</div>',
 
             # Post footer custom html
@@ -983,7 +968,9 @@ class Theme(ThemeBase):
         # return u'\n'.join(html)
 
         context = {
+            'edit_mode': dic.get('edit_mode', False),
             'static_base': "%s/%s/" % (self.cfg.url_prefix_static, self.name),
+            'pageinfo': self.get_pageinfo(dic['page']),            
         }
         template = self.j2env.get_template('bits/body_footer.html')
         output = template.render(context)
