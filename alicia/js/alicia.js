@@ -144,6 +144,9 @@ $(document).ready(function() {
     // Edit page.
     _ = $('FORM#editor');
     if(_.length) {
+        _.find('#chktrivialtop').before('<div id="chktrivialtop_div" class="form-check">');
+        _.find('#chktrivialtop_div').append($('#chktrivialtop'));
+        _.find('#chktrivialtop_div').append($('LABEL[for=chktrivialtop]'));
         _.find('TEXTAREA').addClass("my-3");
     }
     
