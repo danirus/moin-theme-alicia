@@ -116,7 +116,7 @@
               <div class="{{ msg.type }} {{ msg.style }}">
                 {% if msg.type == 'card' %}<div class="card-body">{% endif %}{{ msg.text }}{% if msg.type == 'card' %}</div>{% endif %}
                 {% if msg.type != 'card' %}
-                <a href="{{ search_form_action }}" class="close" aria-label="Close">
+                <a href="{{ search_form_action }}" class="invisible close" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </a>
                 {% endif %}

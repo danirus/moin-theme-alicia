@@ -927,7 +927,6 @@ class Theme(ThemeBase):
             logo_markup = Markup(self.cfg.logo_string)
 
         user_items = self.get_user_items(dic)
-
         context = {
             'page_name': dic['page'].page_name,
             'logo_markup': logo_markup,

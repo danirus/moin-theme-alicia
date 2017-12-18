@@ -268,4 +268,10 @@ $(document).ready(function() {
     $('P.searchhint').each(function() {
         $(this).removeClass('searchhint').addClass('alert alert-info text-center');
     });
+
+    //----------------------------------------------------------------------
+    // Make close button visible only when URL contains hash (like in #preview)
+    if(window.location.href.indexOf('#') > -1) {
+        $('A.close.invisible').removeClass('invisible');
+    }
 });
