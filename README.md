@@ -1,6 +1,6 @@
 # MoinMoin Theme Alicia
 
-This is yet an ongoing effort.
+This is a work in progress.
 
 A full-responsive Twitter-Bootstrap 4 theme for MoinMoin 1.9.
 
